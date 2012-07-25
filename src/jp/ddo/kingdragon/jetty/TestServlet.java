@@ -26,6 +26,13 @@ public class TestServlet extends HttpServlet {
         pw.println("<meta http-equiv=\"content-style-type\" content=\"text/css\" />");
         pw.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />");
         pw.println("");
+        pw.println("<style type=\"text/css\">");
+        pw.println(".multiplication td {");
+        pw.println("width: 20px;");
+        pw.println("text-align: right;");
+        pw.println("}");
+        pw.println("</style>");
+        pw.println("");
         pw.println("<title>TestServlet</title>");
         pw.println("</head>");
         pw.println("<body>");
@@ -33,16 +40,27 @@ public class TestServlet extends HttpServlet {
         pw.println("TestServletです。<br />");
         pw.println("<a href=\"index.html\" title=\"index.htmlへ\">index.htmlへ</a><br />");
         pw.println("<a href=\"another.html\" title=\"another.htmlへ\">another.htmlへ</a><br />");
-        pw.println("<table border=\"1\">");
+        pw.println("<table border=\"1\" class=\"multiplication\">");
         pw.println("<tr>");
-        for (int i = 1; i < 10; i++) {
-            pw.println("<td>" + i + "</td>");
+        for (int i = 0; i < 10; i++) {
+            pw.print("<td>");
+            if (i != 0) {
+                pw.print(i);
+            }
+            pw.println("</td>");
         }
         pw.println("</tr>");
         for (int i = 1; i < 10; i++) {
             pw.println("<tr>");
-            for (int j = 1; j < 10; j++) {
-                pw.println("<td>" + (i * j) + "</td>");
+            for (int j = 0; j < 10; j++) {
+                pw.print("<td>");
+                if (j != 0) {
+                    pw.print(i * j);
+                }
+                else {
+                    pw.print(i);
+                }
+                pw.println("</td>");
             }
             pw.println("</tr>");
         }
