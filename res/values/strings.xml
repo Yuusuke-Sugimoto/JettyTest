@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, JettyTestActivity!</string>
     <string name="app_name">JettyTest</string>
 
+    <string name="error_make_directory_failed">保存用ディレクトリの作成に失敗しました</string>
 </resources>
