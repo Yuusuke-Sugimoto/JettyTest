@@ -14,11 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+
+import javax.servlet.Servlet;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+
+import dalvik.system.DexClassLoader;
 
 /**
  * JettyをAndroidアプリに組み込むテスト用のアプリ
@@ -100,6 +106,36 @@ public class JettyTestActivity extends Activity {
         
         ServletContextHandler mServletContextHandler = new ServletContextHandler();
         mServletContextHandler.addServlet(TestServlet.class, "/TestServlet");
+        File servletDir = new File(baseDir, "Servlet");
+        File[] classes = servletDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                boolean isClass = false;
+                
+                if (filename.endsWith(".dex")) {
+                    isClass = true;
+                }
+                
+                return isClass;
+            }
+        });
+        DexClassLoader loader;
+        for (File classFile : classes) {
+            loader = new DexClassLoader(classFile.getAbsolutePath(), baseDir.getAbsolutePath(),
+                                        null, getClassLoader());
+            try {
+                String classFileName = classFile.getName();
+                String className = classFileName.substring(0, classFileName.length() - 4);
+                Class<?> loadedClass = loader.loadClass(getPackageName() + "." + className);
+                mServletContextHandler.addServlet(loadedClass.asSubclass(Servlet.class), "/" + className);
+            }
+            catch (ClassNotFoundException e) {
+                Log.e("onCreate", e.getMessage(), e);
+            }
+            catch (ClassCastException e) {
+                Log.e("onCreate", e.getMessage(), e);
+            }
+        }
         mHandlerList.addHandler(mServletContextHandler);
         
         mServer.setHandler(mHandlerList);
